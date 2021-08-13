@@ -1,4 +1,4 @@
-module.exports = Q5 // add this line for proper require support 
+module.exports = Q5 // add this line for proper require support
 function Q5(scope) {
     "use strict";
     return new graphics(scope);
@@ -343,6 +343,37 @@ function Q5(scope) {
         $.acos = Math.acos;
         $.atan = Math.atan;
         $.atan2 = Math.atan2;
+        $.deltaTime = 1;
+
+        // new calls
+        $.pow = Math.pow;
+        $.int = function(n, radix = 10) {
+  if (n === Infinity || n === 'Infinity') {
+    return Infinity;
+  } else if (n === -Infinity || n === '-Infinity') {
+    return -Infinity;
+  } else if (typeof n === 'string') {
+    return parseInt(n, radix);
+  } else if (typeof n === 'number') {
+    return n | 0;
+  } else if (typeof n === 'boolean') {
+    return n ? 1 : 0;
+  } else if (n instanceof Array) {
+    return n.map(n => $.int(n, radix));
+  }
+};
+$.boolean = function(n) {
+  if (typeof n === 'number') {
+    return n !== 0;
+  } else if (typeof n === 'string') {
+    return n.toLowerCase() === 'true';
+  } else if (typeof n === 'boolean') {
+    return n;
+  } else if (n instanceof Array) {
+    return n.map($.boolean);
+  }
+};
+
 
         //================================================================
         // VECTOR
@@ -2270,6 +2301,9 @@ function Q5(scope) {
                 } else {
                     looper = setTimeout(_draw, 1000 / $._frameRate);
                 }
+                $.deltaTime = window.performance.now() - $._lastFrameTime;
+                $._lastFrameTime = window.performance.now()
+
             }
             clearBuff();
             firstVertex = true;
@@ -2305,6 +2339,7 @@ function Q5(scope) {
                 if (preloadCnt > 0) {
                     return setTimeout(_start, 10);
                 }
+                $._lastFrameTime = window.performance.now()
                 // ctx.save();
                 $._setupFn();
                 // ctx.restore();
