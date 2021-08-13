@@ -1,3 +1,4 @@
+module.exports = Q5 // add this line for proper require support 
 function Q5(scope) {
     "use strict";
     return new graphics(scope);
